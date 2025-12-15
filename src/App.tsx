@@ -85,6 +85,7 @@ function App() {
   const promptInputRef = useRef<HTMLTextAreaElement>(null);
   // Aktif oturum
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
+  const [menuPos, setMenuPos] = useState({ top: 0, left: 0, width: 0 });
 
   const ais = [
     { id: 'chatgpt', name: 'ChatGPT', color: 'bg-green-600', text: 'text-green-500', border: 'border-green-600' },
@@ -208,9 +209,23 @@ function App() {
     const val = e.target.value;
     setPrompt(val);
     const lastWord = val.split(/[\s\n]/).pop();
+
     if (lastWord && lastWord.startsWith('/')) {
       const filter = lastWord.substring(1).toLowerCase();
       setCommandFilter(filter);
+      
+      // --- YENİ EKLENEN KISIM: KONUM HESAPLAMA ---
+      if (promptInputRef.current) {
+        const rect = promptInputRef.current.getBoundingClientRect();
+        // Menü, kutunun hemen altında (bottom) ve aynı genişlikte olsun
+        setMenuPos({ 
+            top: rect.bottom + 5, // Kutunun 5px altı
+            left: rect.left,      // Kutunun sol hizası
+            width: rect.width     // Kutu genişliği
+        });
+      }
+      // -------------------------------------------
+      
       setShowCommandMenu(true);
       setSelectedCommandIndex(0);
     } else {
@@ -352,6 +367,7 @@ function App() {
   const filteredCommands = commands.filter(c => c.trigger.toLowerCase().startsWith(commandFilter));
 
   return (
+    // 1. DÜZELTME: pt-12 eklendi (Üst barın altında kalmasın diye)
     <div className="flex h-screen bg-gray-900 text-white overflow-hidden font-sans relative">
       
       {/* --- AYARLAR --- */}
@@ -373,7 +389,7 @@ function App() {
               {settingsTab === 'general' && (
                 <div className="space-y-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-cyan-400 uppercase">Karşılaştırma Prompt Şablonu</label>
+                     <label className="text-sm font-bold text-cyan-400 uppercase">Karşılaştırma Prompt Şablonu</label>
                     <p className="text-xs text-gray-400 mb-2"><span className="text-yellow-400">{'{{YANITLAR}}'}</span> etiketi yerine cevaplar gelecektir.</p>
                     <textarea value={compareTemplate} onChange={(e) => setCompareTemplate(e.target.value)} className="w-full h-48 bg-gray-900 border border-gray-600 rounded-xl p-4 text-sm text-gray-300 focus:border-cyan-500 outline-none resize-none font-mono"/>
                   </div>
@@ -382,13 +398,13 @@ function App() {
               {settingsTab === 'commands' && (
                 <div className="space-y-4">
                    <div className="flex gap-2 items-start bg-gray-900/50 p-3 rounded-xl border border-gray-700">
-                      <div className="flex flex-col gap-2 flex-1">
+                     <div className="flex flex-col gap-2 flex-1">
                          <div className="flex items-center gap-2">
                             <span className="text-gray-500 font-bold">/</span>
-                            <input type="text" placeholder="tetikleyici (örn: fix)" value={newCmdTrigger} onChange={(e) => setNewCmdTrigger(e.target.value)} className="bg-transparent border-b border-gray-600 focus:border-cyan-500 outline-none text-white text-sm w-full py-1"/>
+                             <input type="text" placeholder="tetikleyici (örn: fix)" value={newCmdTrigger} onChange={(e) => setNewCmdTrigger(e.target.value)} className="bg-transparent border-b border-gray-600 focus:border-cyan-500 outline-none text-white text-sm w-full py-1"/>
                          </div>
                          <textarea placeholder="Komut metni..." value={newCmdText} onChange={(e) => setNewCmdText(e.target.value)} className="bg-gray-800 text-gray-300 text-xs p-2 rounded border border-gray-700 outline-none resize-none h-16"/>
-                      </div>
+                     </div>
                       <button onClick={addCommand} className="p-2 bg-cyan-600 hover:bg-cyan-500 rounded-lg text-white mt-1"><Plus size={20} /></button>
                    </div>
                    <div className="space-y-2">
@@ -461,12 +477,18 @@ function App() {
                   <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-blue-600 tracking-widest">CORTEX</h1>
                </div>
                <div className="flex gap-1">
+                 {/* YENİ EKLENEN: YENİLEME BUTONU */}
+                 <button onClick={() => window.electronAPI.reloadView(activeTab)} className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-green-400 transition-colors" title="Sayfayı Yenile">
+                    <RotateCcw size={20} />
+                 </button>
+                 
                  <button onClick={() => setIsHistoryOpen(true)} className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-orange-400 transition-colors" title="Geçmiş"><History size={20} /></button>
                  <button onClick={() => setIsSettingsOpen(true)} className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-cyan-400 transition-colors" title="Ayarlar"><Settings size={20} /></button>
                  <button onClick={() => setIsSidebarOpen(false)} className="p-1 hover:bg-gray-700 rounded text-gray-400 hover:text-white transition-colors"><PanelLeftClose size={20} /></button>
                </div>
              </>
            ) : (
+             // Kapalıyken de logoya basınca yenilesin mi? İsteğe bağlı, şimdilik menü açma olarak kalsın.
              <button onClick={() => setIsSidebarOpen(true)} className="p-2 bg-gray-700 rounded-lg text-cyan-400 hover:bg-cyan-900/30 transition-all shadow-lg"><Cpu size={24} /></button>
            )}
         </div>
@@ -494,12 +516,35 @@ function App() {
                 </div>
 
                 <div className="relative mb-3">
+                  {/* 3. DÜZELTME: SLASH MENÜSÜ AŞAĞI AÇILIYOR (top-full mt-2) */}
                   {showCommandMenu && filteredCommands.length > 0 && (
-                     <div className="absolute bottom-full left-0 w-full mb-2 bg-gray-800 border border-gray-600 rounded-xl shadow-2xl overflow-hidden z-[60] max-h-48 overflow-y-auto custom-scrollbar">
-                        <div className="p-2 text-xs text-gray-500 font-bold bg-gray-900/50 border-b border-gray-700 flex items-center gap-1"><Zap size={12} className="text-yellow-400" /> HIZLI KOMUTLAR</div>
-                        {filteredCommands.map((cmd, idx) => (
-                           <button key={idx} onClick={() => insertCommand(cmd)} className={`w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors ${idx === selectedCommandIndex ? 'bg-cyan-900/50 text-white' : 'text-gray-300 hover:bg-gray-700'}`}><span className="font-bold text-cyan-400">/{cmd.trigger}</span><span className="opacity-70 truncate">{cmd.text}</span></button>
-                        ))}
+                     <div 
+                        className="fixed bg-gray-800 border border-gray-600 rounded-xl shadow-2xl z-[9999] overflow-hidden animate-in fade-in zoom-in-95 duration-100"
+                        style={{ 
+                            top: menuPos.top, 
+                            left: menuPos.left, 
+                            width: menuPos.width,
+                            maxHeight: '300px' // Çok uzarsa kendi içinde scroll olsun
+                        }}
+                     >
+                        <div className="p-2 text-xs text-gray-500 font-bold bg-gray-900/50 border-b border-gray-700 flex items-center gap-1">
+                            <Zap size={12} className="text-yellow-400" /> HIZLI KOMUTLAR
+                        </div>
+                        <div className="flex flex-col max-h-60 overflow-y-auto custom-scrollbar"> 
+                            {filteredCommands.map((cmd, idx) => (
+                               <button 
+                                  key={idx} 
+                                  onClick={() => insertCommand(cmd)} 
+                                  className={`w-full text-left px-3 py-3 text-sm flex flex-col gap-1 transition-colors border-b border-gray-700/50 last:border-0 ${idx === selectedCommandIndex ? 'bg-cyan-900/50 text-white' : 'text-gray-300 hover:bg-gray-700'}`}
+                                >
+                                    <span className="font-bold text-cyan-400 flex items-center gap-2">
+                                        /{cmd.trigger}
+                                        {idx === selectedCommandIndex && <span className="text-[10px] bg-cyan-500 text-black px-1 rounded font-bold">ENTER</span>}
+                                    </span>
+                                    <span className="opacity-70 text-xs line-clamp-1">{cmd.text}</span>
+                               </button>
+                            ))}
+                        </div>
                      </div>
                   )}
                   <textarea ref={promptInputRef} value={prompt} onChange={handlePromptChange} onKeyDown={handleKeyDown} placeholder="Tüm zekalara sor... (Komutlar için / yazın)" className="w-full h-24 bg-gray-900/50 border border-gray-600 rounded-xl p-3 text-sm focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 outline-none resize-none transition-all placeholder-gray-500" />
@@ -512,7 +557,7 @@ function App() {
                 </div>
               </div>
 
-              {/* YANIT PANELİ & ZİNCİRLEME */}
+              {/* YANIT PANELİ */}
               <div className="flex-1 flex flex-col border-t border-gray-700 bg-gray-800/50 overflow-hidden relative">
                 <div className="flex border-b border-gray-700 overflow-x-auto custom-scrollbar bg-gray-900/30">
                   {ais.map(ai => (
@@ -531,7 +576,6 @@ function App() {
                            <button onClick={() => setChainMenuOpen(!chainMenuOpen)} className="hover:text-cyan-400" title="Zincirleme (Neural Link)"><Share size={14} /></button>
                            <button onClick={() => handleCopyToPrompt(responses[activeTab])} title="Kopyala"><Copy size={14} className="hover:text-white"/></button>
                         </div>
-                        
                         {/* ZİNCİRLEME MENÜSÜ */}
                         {chainMenuOpen && (
                           <div className="absolute right-0 top-6 bg-gray-800 border border-gray-600 rounded-lg shadow-xl z-50 p-2 w-48 animate-in fade-in zoom-in duration-100">
