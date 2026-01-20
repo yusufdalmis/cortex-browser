@@ -4,7 +4,7 @@
 
 Cortex; **ChatGPT, Gemini, DeepSeek ve Claude** yapay zeka modellerini tek bir pencerede birleştirerek, hepsini aynı anda yönetmenizi, yanıtlarını karşılaştırmanızı ve birbirleri arasında veri akışı (zincirleme) sağlamanızı mümkün kılan yeni nesil bir çalışma alanıdır.
 
-https://github.com/yusufdalmis/cortex-browser/blob/main/Ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC%202026-01-20%20131836.png
+<img width="2559" height="1390" alt="image" src="https://github.com/user-attachments/assets/ef4e79ea-b2b0-4751-926a-0290f121dcc2" />
 
 ## 🚀 Özellikler
 
