@@ -6,6 +6,8 @@ Cortex; **ChatGPT, Gemini, DeepSeek ve Claude** yapay zeka modellerini tek bir p
 
 <img width="2559" height="1390" alt="image" src="https://github.com/user-attachments/assets/ef4e79ea-b2b0-4751-926a-0290f121dcc2" />
 
+youtube: https://www.youtube.com/watch?v=isHm_B_H1aI
+
 ## 🚀 Özellikler
 
 ### ⚡ Çoklu Model Desteği (Multi-Model)
