@@ -1,73 +1,89 @@
-# React + TypeScript + Vite
+# 🧠 Cortex Browser
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**Multi-AI Orchestration Browser**
 
-Currently, two official plugins are available:
+Cortex; **ChatGPT, Gemini, DeepSeek ve Claude** yapay zeka modellerini tek bir pencerede birleştirerek, hepsini aynı anda yönetmenizi, yanıtlarını karşılaştırmanızı ve birbirleri arasında veri akışı (zincirleme) sağlamanızı mümkün kılan yeni nesil bir çalışma alanıdır.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+https://github.com/yusufdalmis/cortex-browser/blob/main/Ekran%20g%C3%B6r%C3%BCnt%C3%BCs%C3%BC%202026-01-20%20131836.png
 
-## React Compiler
+## 🚀 Özellikler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### ⚡ Çoklu Model Desteği (Multi-Model)
+ChatGPT, Gemini, DeepSeek ve Claude'u aynı anda, bölünmüş ekranlarda (Split View) kullanın. İhtiyacınız olmayanı tek tıkla kapatın.
 
-## Expanding the ESLint configuration
+### 🎹 Yapay Zeka Orkestrasyonu
+Tek bir prompt yazın, **"Gönder"** diyerek aktif olan tüm yapay zekalara aynı anda iletin. Hangi modelin hangi soruya daha iyi cevap verdiğini saniyeler içinde görün.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 🔗 Neural Link (Zincirleme Sorgu)
+Bir yapay zekanın ürettiği çıktıyı, başka bir yapay zekaya **girdi** olarak verin.
+*Örnek: "DeepSeek ile araştır, Claude ile özetle, ChatGPT ile formatla."*
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### ⚡ Hızlı Komutlar (Slash Commands)
+`/` tuşuna basarak hızlı aksiyon menüsünü açın:
+- `/fix`: Koddaki hataları bul ve düzelt.
+- `/refactor`: Kodu Clean Code prensiplerine göre yeniden yaz.
+- `/explain`: Karmaşık kodları basitçe açıkla.
+- `/unit-test`: Kod için test senaryoları yaz.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 📊 Yanıt Karşılaştırma
+Seçilen modellerin verdiği yanıtları özel bir pencerede yan yana getirerek doğruluk, hız ve üslup açısından analiz edin.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 💾 Yerel Geçmiş & Gizlilik
+Tüm sohbet geçmişiniz **sadece kendi bilgisayarınızda** (Local Storage) saklanır. Harici bir sunucuya veri gönderilmez.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🛠️ Kurulum (Geliştirici Modu)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Projeyi bilgisayarınızda geliştirmek veya kaynak koddan çalıştırmak için:
+
+1. **Repoyu Klonlayın**
+   ```bash
+   git clone [https://github.com/yusufdalmis/cortex-browser.git](https://github.com/yusufdalmis/cortex-browser.git)
+   cd cortex-browser
+Bağımlılıkları Yükleyin
+
+Bash
+npm install
+Uygulamayı Başlatın
+
+Bash
+npm run dev
+(Bu komut hem React sunucusunu hem de Electron penceresini açacaktır.)
+
+📦 Build (EXE Oluşturma)
+Kendi .exe dosyanızı oluşturmak isterseniz:
+
+Önceki derlemeleri temizleyin (Opsiyonel)
+
+Bash
+rm -rf dist dist-electron release
+React ve Electron'u Derleyin
+
+Bash
+npm run build
+npx tsc -p electron/tsconfig.json
+Paketleyin (Windows için)
+
+Bash
+npx electron-builder --win
+Çıktı dosyası release klasöründe oluşacaktır.
+
+📥 İndir (Releases)
+Kurulumla uğraşmak istemiyorsanız, hazır .exe dosyasını Releases sayfasından indirebilirsiniz.
+
+🤝 Katkıda Bulunma
+Bu repoyu "Fork"layın.
+
+Yeni bir dal (branch) oluşturun (git checkout -b ozellik/YeniOzellik).
+
+Değişikliklerinizi yapın ve commit'leyin (git commit -m 'Yeni özellik eklendi').
+
+Dalınızı gönderin (git push origin ozellik/YeniOzellik).
+
+Bir "Pull Request" oluşturun.
+
+📄 Lisans
+Bu proje MIT License altında lisanslanmıştır.
+
+Yusuf Dalmış tarafından geliştirilmiştir.
